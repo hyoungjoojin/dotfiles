@@ -1,0 +1,110 @@
+return {
+  { -- Autocompletion
+    'saghen/blink.cmp',
+    event = 'VeryLazy',
+    version = '1.8.0',
+    dependencies = {
+      {
+        -- Lua Snippet Engine
+        'L3MON4D3/LuaSnip',
+        version = '2.*',
+        build = (function()
+          -- Build Step is needed for regex support in snippets.
+          -- This step is not supported in many windows environments.
+          -- Remove the below condition to re-enable on windows.
+          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
+            return
+          end
+          return 'make install_jsregexp'
+        end)(),
+        dependencies = {
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
+        },
+        opts = {},
+      },
+      'folke/lazydev.nvim',
+    },
+    --- @module 'blink.cmp'
+    --- @type blink.cmp.Config
+    opts = {
+      keymap = {
+        preset = 'default',
+        ['<C-j>'] = { 'select_next', 'fallback' },
+        ['<C-k>'] = { 'select_prev', 'fallback' },
+        ['<C-l>'] = { 'select_and_accept' },
+        ['<C-h>'] = { 'show', 'show_documentation', 'hide_documentation' },
+      },
+
+      appearance = {
+        nerd_font_variant = 'mono',
+      },
+
+      completion = {
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
+      },
+
+      sources = {
+        default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        providers = {
+          lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+        },
+      },
+
+      snippets = { preset = 'luasnip' },
+      fuzzy = { implementation = 'lua' },
+
+      -- Shows a signature help window while you type arguments for a function
+      signature = {
+        enabled = true,
+      },
+    },
+  },
+  {
+    'windwp/nvim-autopairs',
+    version = '0.11.0',
+    event = 'InsertEnter',
+    opts = {},
+  },
+  {
+    'numToStr/Comment.nvim',
+    config = function()
+      local call = require('Comment.api').call
+      vim.keymap.set('n', '<leader>/', call('toggle.linewise.current', 'g@$'), { expr = true, desc = 'Toggle comment for current line' })
+      vim.keymap.set(
+        'x',
+        '<leader>/',
+        '<ESC><CMD>lua require("Comment.api").locked("toggle.linewise")(vim.fn.visualmode())<CR>',
+        { desc = 'Toggle comment for selected line' }
+      )
+    end,
+    opts = {
+      mappings = {
+        basic = false,
+        extra = false,
+      },
+    },
+  },
+  {
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false },
+  },
+  {
+    -- Add indentation guides even on blank lines
+    'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
+    config = {
+      indent = { char = '▏' },
+      scope = {
+        show_start = false,
+        show_end = false,
+      },
+    },
+  },
+}
