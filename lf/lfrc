@@ -1,0 +1,29 @@
+set shell zsh
+
+set hidden
+set number
+set incsearch
+set incfilter
+set info size
+set ratios 1:2:2
+
+map a :push %mkdir<space>
+map A :push %touch<space>
+map <enter> shell
+
+cmd open ${{
+	case $(file --mime-type "$f" -b) in
+		*) $EDITOR $fx ;;
+	esac
+}}
+
+map l open
+
+cmd delete ${{
+    set -f
+    printf "Delete $f? [y/n]"
+    read ans
+    [ "$ans" = "y" ] && rm -rf $fx
+}}
+
+map d delete
