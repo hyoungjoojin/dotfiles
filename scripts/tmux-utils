@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+COMMAND=$1
+
+os() {
+  case "$(uname -s)" in
+  Linux*) echo "Linux" ;;
+  Darwin*) echo "OSX" ;;
+  *) echo "Unknown" ;;
+  esac
+}
+
+battery() {
+  OS=$(os)
+
+  if [ "$OS" == "Linux" ]; then
+    acpi -b | grep -m 1 -Eo "[0-9]+%"
+  elif [ "$OS" == "OSX" ]; then
+    pmset -g batt | grep -o "[0-9]\{1,3\}%"
+  else
+    return 0
+  fi
+}
+
+charging() {
+  OS=$(os)
+
+  status=0
+
+  if [ "$OS" == "Linux" ]; then
+    if [ "$(acpi -b | grep -m 1 | awk '{print $3}' | tr -d ',')" == "Charging" ]; then
+      status=1
+    fi
+  elif [ "$OS" == "OSX" ]; then
+    if [ "$(pmset -g batt | grep 'Now drawing from' | awk '{print $4}' | tr -d ';')" != "AC" ]; then
+      status=1
+    fi
+  fi
+
+  if [ $status -eq 1 ]; then
+    echo "1"
+  else
+    echo "0"
+  fi
+}
+
+cpu_percentage() {
+  OS=$(os)
+
+  if [ "$OS" == "Linux" ]; then
+    echo $(LC_NUMERIC=en_US.UTF-8 top -bn2 -d 0.01 | grep "Cpu(s)" | tail -1 | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}')
+  elif [ "$OS" == "OSX" ]; then
+    cpuvalue=$(ps -A -o %cpu | awk -F. '{s+=$1} END {print s}')
+    cpucores=$(sysctl -n hw.logicalcpu)
+    cpuusage=$((cpuvalue / cpucores))
+    echo "$cpuusage"
+  else
+    echo 0
+  fi
+}
+
+if [ $COMMAND == "time" ]; then
+  printf "$(date '+%H:%M')"
+elif [ $COMMAND == "battery" ]; then
+  echo "$(battery)"
+elif [ $COMMAND == "charging" ]; then
+  echo "$(charging)"
+elif [ $COMMAND == "cpu_percentage" ]; then
+  echo "$(cpu_percentage)"
+fi

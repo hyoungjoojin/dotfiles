@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if [ "$TERM_PROGRAM" != "tmux" ]; then
+  echo "$HOME/Desktop"
+  exit 0
+fi
+
+TMUX_SESSION=$(tmux display-message -p '#S')
+
+if [ "$TMUX_SESSION" = "home" ]; then
+  echo "$HOME/Desktop"
+  exit 0
+fi
+
+if cd "$HOME/Desktop/projects/$TMUX_SESSION" &>/dev/null; then
+  echo "$HOME/Desktop/projects/$TMUX_SESSION"
+else
+  echo "$HOME/Desktop"
+fi

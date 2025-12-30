@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+PROJECT=$1
+
+if [[ -v PROJECT && -d "$HOME/Desktop/projects/$PROJECT" ]]; then
+fi

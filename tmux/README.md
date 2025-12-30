@@ -12,3 +12,4 @@ The prefix is set to `CTRL-a`
 | Prefix + `<`, Prefix + `>` |       Swap panes        |
 |       Prefix + `Tab`       |   Jump to last window   |
 |      Prefix + `Enter`      |     Enter copy mode     |
+|      Prefix + `e`      |      Open explorer    |
