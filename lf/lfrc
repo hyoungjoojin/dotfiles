@@ -2,6 +2,7 @@ set shell zsh
 
 set hidden
 set number
+set relativenumber
 set incsearch
 set incfilter
 set info size
