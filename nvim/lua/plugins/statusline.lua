@@ -20,42 +20,6 @@ local modes = {
 
 return {
   {
-    -- Tab bar
-    'akinsho/bufferline.nvim',
-    version = '4.9.1',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    config = function()
-      require('bufferline').setup {
-        options = {
-          mode = 'buffers',
-          numbers = 'none',
-          separator_style = 'slope',
-          always_show_bufferline = true,
-          tab_size = 16,
-          hover = {
-            enabled = false,
-          },
-        },
-      }
-    end,
-    keys = function()
-      local keymaps = {}
-
-      local bufferline = require 'bufferline'
-      for i = 1, 9 do
-        table.insert(keymaps, {
-          '<leader>b' .. i,
-          function()
-            bufferline.go_to(i, true)
-          end,
-          desc = 'Go to buffer ' .. i,
-        })
-      end
-
-      return keymaps
-    end,
-  },
-  {
     -- Status bar
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -65,7 +29,7 @@ return {
           icons_enabled = false,
           theme = 'auto',
           component_separators = { left = '|', right = '|' },
-          section_separators = { left = '', right = '' },
+          section_separators = { left = ' ', right = ' ' },
           globalstatus = true,
         },
         sections = {
@@ -93,12 +57,11 @@ return {
             },
           },
           lualine_c = {
-            { 'filename', file_status = false, path = 3 },
+            { 'filename', file_status = true },
           },
           lualine_x = {
             {
               'lsp_status',
-              icon = '',
               symbols = {
                 -- Standard unicode symbols to cycle through for LSP progress:
                 spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' },
@@ -108,9 +71,44 @@ return {
                 separator = ' ',
               },
               -- List of LSP names to ignore (e.g., `null-ls`):
-              ignore_lsp = {},
+              ignore_lsp = {
+                'GitHub Copilot',
+                'stylua',
+              },
               -- Display the LSP name
               show_name = true,
+            },
+            {
+              function()
+                local status, conform = pcall(require, 'conform')
+                if not status then
+                  return '󱪟'
+                end
+
+                local lsp_format = require 'conform.lsp_format'
+
+                -- Get formatters for the current buffer
+                local formatters = conform.list_formatters_for_buffer()
+                if formatters and #formatters > 0 then
+                  local formatterNames = {}
+
+                  for _, formatter in ipairs(formatters) do
+                    table.insert(formatterNames, formatter)
+                  end
+
+                  return table.concat(formatterNames, ' ')
+                end
+
+                -- Check if there's an LSP formatter
+                local bufnr = vim.api.nvim_get_current_buf()
+                local lsp_clients = lsp_format.get_format_clients { bufnr = bufnr }
+
+                if not vim.tbl_isempty(lsp_clients) then
+                  return '󱪟'
+                end
+
+                return '󱪟'
+              end,
             },
             {
               'diagnostics',
@@ -127,22 +125,27 @@ return {
               always_visible = true, -- Show diagnostics even if there are none.
             },
           },
-          lualine_y = {},
+          lualine_y = {
+            {
+              'filetype',
+              colored = false,
+            },
+          },
           lualine_z = {
             -- line:character position
-            '%l:%c %3p%%',
+            '%l:%c | %p%%',
           },
         },
         winbar = {
           lualine_a = {},
           lualine_b = {},
           lualine_c = {},
-          lualine_x = {
+          lualine_x = {},
+          lualine_y = {
             {
               'searchcount',
             },
           },
-          lualine_y = {},
           lualine_z = {},
         },
       }

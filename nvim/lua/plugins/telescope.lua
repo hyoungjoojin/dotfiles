@@ -42,67 +42,16 @@ return {
       vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = 'Search buffers' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = 'Search diagnostics' })
       vim.keymap.set('n', '<leader>st', builtin.live_grep, { desc = 'Search text' })
+      vim.keymap.set('n', '<leader>ss', builtin.search_history, { desc = 'Search search history' })
+      vim.keymap.set('n', '<leader>sg', builtin.git_status, { desc = 'Search through git status' })
       vim.keymap.set('n', '<leader>sT', ':TodoTelescope<CR>', { desc = 'Search todos' })
       vim.keymap.set('n', '<leader>s/', function()
         builtin.live_grep {
           grep_open_files = true,
-          prompt_title = 'Search in open files',
+          prompt_title = 'Search text in open files',
         }
-      end, { desc = 'Search in open files' })
-
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      end, { desc = 'Search text in open files' })
+      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = 'Search recently opened files' })
     end,
-  },
-  {
-    'nvim-neo-tree/neo-tree.nvim',
-    version = '*',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-      'MunifTanjim/nui.nvim',
-    },
-    lazy = false,
-    keys = {
-      { '<leader>e', ':Neotree toggle<CR>', desc = 'Toggle explorer', silent = true },
-    },
-    opts = {
-      filesystem = {
-        window = {
-          mappings = {
-            ['<C-h>'] = 'navigate_up',
-            ['h'] = 'toggle_node',
-            ['l'] = 'open',
-          },
-        },
-      },
-    },
-  },
-  {
-    'hedyhli/outline.nvim',
-    version = '*',
-    lazy = false,
-    config = function()
-      require('outline').setup()
-    end,
-    keys = {
-      { '<leader>lo', '<cmd>Outline<CR>', desc = 'Toggle outline', silent = true },
-    },
-  },
-  {
-    'folke/trouble.nvim',
-    keys = {
-      {
-        '<leader>ld',
-        function()
-          require('trouble').toggle 'diagnostics'
-        end,
-        mode = 'n',
-        desc = 'Toggle Diagnostics',
-      },
-    },
-    opts = {},
   },
 }

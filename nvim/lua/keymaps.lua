@@ -2,7 +2,6 @@ vim.keymap.set('n', '<leader>q', ':quit<CR>', { desc = 'Quit' })
 vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Save' })
 vim.keymap.set('n', '<leader>c', ':bd<CR>', { desc = 'Close current buffer' })
 
-vim.keymap.set('n', '<leader>tt', ':terminal<CR>', { desc = 'Open terminal' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 vim.keymap.set('n', '<leader>-', ':vsplit<CR>', { desc = 'Split vertically' })

@@ -1,30 +1,31 @@
 #!/usr/bin/env bash
 
 check_and_write() {
-  local TARGET=$1
-  local SOURCE=$2
+    local TARGET=$1
+    local SOURCE=$2
 
-  local write=true
+    local write=true
 
-  if [ -e "$TARGET" ]; then
-    printf "$TARGET already exists. Do you want to overwrite it? (y/n) "
-    read -r answer
-    if [ "$answer" != "y" ]; then
-      write=false
-    fi
-  fi
-
-  if [ "$write" = true ]; then
     if [ -e "$TARGET" ]; then
-      echo "Removing $TARGET"
-      rm -rf "$TARGET"
+        printf "$TARGET already exists. Do you want to overwrite it? (y/n) "
+        read -r answer
+        if [ "$answer" != "y" ]; then
+            write=false
+        fi
     fi
 
-    echo "Copying $SOURCE to $TARGET"
-    cp -r "$SOURCE" "$TARGET"
-  fi
+    if [ "$write" = true ]; then
+        if [ -e "$TARGET" ]; then
+            echo "Removing $TARGET"
+            rm -rf "$TARGET"
+        fi
+
+        echo "Copying $SOURCE to $TARGET"
+        cp -r "$SOURCE" "$TARGET"
+    fi
 }
 
 check_and_write "$HOME/.config/lf" "./lf"
 check_and_write "$HOME/.tmux.conf" "./tmux/.tmux.conf"
 check_and_write "$HOME/.local/scripts" "./scripts"
+check_and_write "$HOME/.config/nvim" "./nvim"

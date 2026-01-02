@@ -7,6 +7,7 @@ return {
       'nvim-neotest/nvim-nio', -- Required dependency for nvim-dap-ui
       'theHamsta/nvim-dap-virtual-text',
       'mason-org/mason.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
       'jay-babu/mason-nvim-dap.nvim',
       'leoluz/nvim-dap-go', -- Debugger for Go
     },
@@ -15,13 +16,9 @@ return {
       local dapui = require 'dapui'
 
       require('mason-nvim-dap').setup {
-        automatic_installation = true,
+        automatic_installation = false,
         handlers = {},
-        ensure_installed = {
-          'codelldb', -- DAP for C/C++
-          'debugpy', -- DAP for Python
-          'delve', -- DAP for Go
-        },
+        ensure_installed = {},
       }
 
       -- Dap UI setup
